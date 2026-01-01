@@ -1,0 +1,17 @@
+# Build artifacts
+/build/
+compile_commands.json
+
+# Clangd / language server cache
+.cache/
+
+# Editor / backup files
+*~
+.save/
+*.swp
+*.swo
+
+# Optional IDE folders
+.vscode/
+.idea/
+cmake-build-*/
