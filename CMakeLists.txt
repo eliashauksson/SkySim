@@ -1,32 +1,22 @@
 # CMakeLists.txt
 
-# Cmake version
-cmake_minimum_required(VERSION 3.20..4.21)
+cmake_minimum_required(VERSION 3.20)
+project(SkySim VERSION 0.1 LANGUAGES C CXX)
 
-# Project statement
-project(
-    SkySim
-    VERSION 0.1
-    LANGUAGES C CXX
-)
-
-# C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Dependencies
-find_package(glfw3 REQUIRED)
-find_package(OpenGL REQUIRED)
+# Sources
+file(GLOB SOURCES "src/*.cpp" "src/*.c")
+add_executable(MyApp ${SOURCES})
 
-# Exectuable
-add_executable(MyApp
-    ${CMAKE_SOURCE_DIR}/src/glad.c
-    ${CMAKE_SOURCE_DIR}/src/main.cpp
-    ${CMAKE_SOURCE_DIR}/src/Window.cpp
-)
-
-# Includes
-target_include_directories(MyApp PRIVATE ${CMAKE_SOURCE_DIR}/include)
+# Include directories
+target_include_directories(MyApp PRIVATE include include/glad include/KHR)
 
 # Link libraries
-target_link_libraries(MyApp PRIVATE glfw OpenGL::GL)
+find_package(OpenGL REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
+target_link_libraries(MyApp PRIVATE OpenGL::GL glfw)
+
+# Copy shaders to build folder
+file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR})

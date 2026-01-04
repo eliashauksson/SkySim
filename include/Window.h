@@ -5,6 +5,7 @@
 #include <string>
 
 struct GLFWwindow;
+class Renderer;
 
 class Window {
 public:
@@ -19,12 +20,13 @@ public:
   void pollEvents() const;
   void swapBuffers() const;
 
+  void setRenderer(Renderer* renderer);
+
   int getWidth() const;
   int getHeight() const;
 
 private:
-  int width_;
-  int height_;
+  int width_, height_;
   std::string title_;
   GLFWwindow *window_;
 
@@ -33,6 +35,8 @@ private:
   static int glfwRefCount_;
 
   static void glfwOnFrameBufferSize_(GLFWwindow *window, int width, int height);
+
+  Renderer* renderer_;
 };
 
 #endif // WINDOW_H

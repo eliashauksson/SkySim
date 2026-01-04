@@ -1,5 +1,6 @@
 // Window.cpp
 #include "Window.h"
+#include "Renderer.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -8,7 +9,7 @@
 int Window::glfwRefCount_ = 0;
 
 Window::Window(int width, int height, std::string title)
-    : width_(width), height_(height), title_(title) {
+    : width_(width), height_(height), title_(title), renderer_(nullptr) {
   initGlfw_();
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -56,6 +57,8 @@ void Window::pollEvents() const { glfwPollEvents(); }
 
 void Window::swapBuffers() const { glfwSwapBuffers(window_); }
 
+void Window::setRenderer(Renderer *renderer) { renderer_ = renderer; }
+
 int Window::getWidth() const { return width_; }
 
 int Window::getHeight() const { return height_; }
@@ -85,4 +88,8 @@ void Window::glfwOnFrameBufferSize_(GLFWwindow *window, int width, int height) {
   self->width_ = width;
   self->height_ = height;
   glViewport(0, 0, width, height);
+
+  if (self->renderer_) {
+    self->renderer_->setWindowSize(width, height);
+  }
 }
