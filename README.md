@@ -8,13 +8,17 @@ It provides a basic framework for rendering, window management, and future logic
 ## Features
 
 - Simple window management via a `Window` class
+- 2D rendering via the `Renderer` class
+  - Draw lines with different thickness and color
 - Cross-platform-ready (Windows/macOS support is not tested)
 - CMake + Makefile build system
 
 ## Current Status
 
-- The project has just been started.
-- Window creation and OpenGL context initialization are set up, but **the simulation logic is not yet implemented**.
+- Window creation and OpenGL initializaiton are now working
+- Renderer supports drawing **lines with thickness and colors**.
+- Shader-based pipeline implemented (vertex and fragment shaders).
+- Simulation logic is **not yet implemented**.
 
 ## Prerequisites
 
