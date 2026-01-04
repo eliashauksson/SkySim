@@ -8,7 +8,7 @@ It provides a basic framework for rendering, window management, and future logic
 ## Features
 
 - Simple window management via a `Window` class
-- Cross-platform-read (Windows/macOS support is not tested)
+- Cross-platform-ready (Windows/macOS support is not tested)
 - CMake + Makefile build system
 
 ## Current Status

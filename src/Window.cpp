@@ -1,27 +1,34 @@
 // Window.cpp
 #include "Window.h"
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
+#include <stdexcept>
 
-Window::Window(int width, int height, const char *title)
+int Window::glfwRefCount_ = 0;
+
+Window::Window(int width, int height, std::string title)
     : width_(width), height_(height), title_(title) {
-
-  if (!glfwInit())
-    throw std::runtime_error("GLFW initialization failed.");
+  initGlfw_();
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window_ = glfwCreateWindow(width_, height_, title_, nullptr, nullptr);
-  if (!window_)
+  window_ = glfwCreateWindow(width_, height_, title_.c_str(), nullptr, nullptr);
+  if (!window_) {
+    terminateGlfw_();
     throw std::runtime_error("Failed to create GLFW window.");
+  }
 
   glfwMakeContextCurrent(window_);
 
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    glfwDestroyWindow(window_);
+    window_ = nullptr;
+    terminateGlfw_();
     throw std::runtime_error("Failed to initialize GLAD.");
+  }
 
   glfwSetWindowUserPointer(window_, this);
   glfwSetFramebufferSizeCallback(window_, glfwOnFrameBufferSize_);
@@ -38,7 +45,7 @@ Window::~Window() {
     glfwDestroyWindow(window_);
     window_ = nullptr;
   }
-  glfwTerminate();
+  terminateGlfw_();
 }
 
 bool Window::shouldClose() const { return glfwWindowShouldClose(window_); }
@@ -52,6 +59,22 @@ void Window::swapBuffers() const { glfwSwapBuffers(window_); }
 int Window::getWidth() const { return width_; }
 
 int Window::getHeight() const { return height_; }
+
+void Window::initGlfw_() {
+  if (glfwRefCount_ == 0) {
+    if (!glfwInit()) {
+      throw std::runtime_error("GLFW initialization failed.");
+    }
+  }
+  ++glfwRefCount_;
+}
+
+void Window::terminateGlfw_() {
+  --glfwRefCount_;
+  if (glfwRefCount_ == 0) {
+    glfwTerminate();
+  }
+}
 
 void Window::glfwOnFrameBufferSize_(GLFWwindow *window, int width, int height) {
   auto *self = static_cast<Window *>(glfwGetWindowUserPointer(window));

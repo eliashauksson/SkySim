@@ -2,18 +2,17 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <string>
+
+struct GLFWwindow;
 
 class Window {
 public:
-  static inline constexpr int defaultWidth = 1024;
-  static inline constexpr int defaultHeight = 768;
-  static inline constexpr const char *defaultTitle = "SkySim";
-
-  explicit Window(int width = defaultWidth, int height = defaultHeight,
-                  const char *title = defaultTitle);
+  Window(int width = 1024, int height = 768, std::string title = "SkySim");
   ~Window();
+
+  Window(const Window &) = delete;
+  Window &operator=(const Window &) = delete;
 
   bool shouldClose() const;
   void clear() const;
@@ -26,8 +25,12 @@ public:
 private:
   int width_;
   int height_;
-  const char *title_;
+  std::string title_;
   GLFWwindow *window_;
+
+  static void initGlfw_();
+  static void terminateGlfw_();
+  static int glfwRefCount_;
 
   static void glfwOnFrameBufferSize_(GLFWwindow *window, int width, int height);
 };
